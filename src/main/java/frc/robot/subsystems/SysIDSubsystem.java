@@ -7,6 +7,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import java.util.function.DoubleSupplier;
@@ -30,6 +33,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 //import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.networktables.GenericEntry;
 //import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -51,6 +55,18 @@ public class SysIDSubsystem extends SubsystemBase {
   //private final MecanumDrive m_drive =
   //  new MecanumDrive(m_frontLeft::set, m_rearLeft::set, m_frontRight::set, m_rearRight::set);
    
+    private final ShuffleboardTab driveTab = Shuffleboard.getTab("Drivetrain Data");
+
+    private GenericEntry FLDistanceEntry;
+    private GenericEntry RLDistanceEntry;
+    private GenericEntry FRDistanceEntry;
+    private GenericEntry RRDistanceEntry;
+
+    private GenericEntry FLPositionEntry;
+    private GenericEntry RLPositionEntry;
+    private GenericEntry FRPositionEntry;
+    private GenericEntry RRPositionEntry;
+
 
   // The front-left-side drive encoder
   private final Encoder m_frontLeftEncoder =
@@ -185,13 +201,24 @@ public class SysIDSubsystem extends SubsystemBase {
     m_rearLeftEncoder.reset();
     m_frontRightEncoder.reset();
     m_rearRightEncoder.reset();
-    
- 
+
+     // Initialize Shuffleboard widgets for encoder positions
+    FLPositionEntry = driveTab.add("FL Encoder Position", 0).getEntry();
+    RLPositionEntry = driveTab.add("RL Encoder Position", 0).getEntry();
+    FRPositionEntry = driveTab.add("FR Encoder Position", 0).getEntry();
+    RRPositionEntry = driveTab.add("RR Encoder Position", 0).getEntry();
+
+    // Initialize Shuffleboard widgets for encoder distances
+    FLDistanceEntry = driveTab.add("FL Encoder Distance", 0.0).getEntry();
+    RLDistanceEntry = driveTab.add("RL Encoder Distance", 0.0).getEntry();
+    FRDistanceEntry = driveTab.add("FR Encoder Distance", 0.0).getEntry();
+    RRDistanceEntry = driveTab.add("RR Encoder Distance", 0.0).getEntry();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    showTelemetry();
   }
   
   /*
@@ -210,5 +237,45 @@ public class SysIDSubsystem extends SubsystemBase {
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
+  }
+
+  
+  public Encoder getFrontLeftEncoder() {
+    //Testbed
+    return m_frontLeftEncoder;
+  }
+
+  public Encoder getRearLeftEncoder() {
+    //Testbed
+    return m_rearLeftEncoder;
+  }
+
+  public Encoder getFrontRightEncoder() {
+    //Testbed
+    return m_frontRightEncoder;
+  }
+
+
+  public Encoder getRearRightEncoder() {
+
+    //Testbed
+    return m_rearRightEncoder;
+  }
+
+  
+  public void showTelemetry(){
+    // Update the Shuffleboard entries with current values
+    FLPositionEntry.setDouble(m_frontLeftEncoder.getRaw());
+    RLPositionEntry.setDouble(m_rearLeftEncoder.getRaw());
+    FRPositionEntry.setDouble(m_frontRightEncoder.getRaw());
+    RRPositionEntry.setDouble(m_rearRightEncoder.getRaw());
+
+    FLDistanceEntry.setDouble(m_frontLeftEncoder.getDistance());
+    RLDistanceEntry.setDouble(m_rearLeftEncoder.getDistance());
+    FRDistanceEntry.setDouble(m_frontRightEncoder.getDistance());
+    RRDistanceEntry.setDouble(m_rearRightEncoder.getDistance());
+
+   
+  
   }
 }
