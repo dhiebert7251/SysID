@@ -22,6 +22,8 @@ import frc.robot.Constants.PhysicalConstants;
 import frc.robot.Constants.DriveConstants;
 
 import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Feet;
+import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 //import static edu.wpi.first.units.Units.Radians;
@@ -46,8 +48,8 @@ public class SysIDSubsystem extends SubsystemBase {
   private final WPI_TalonSRX m_frontRight = new WPI_TalonSRX(DriveConstants.kFrontRightMotorPort);
   private final WPI_VictorSPX m_rearRight = new WPI_VictorSPX(DriveConstants.kRearRightMotorPort);
 
-  private final MecanumDrive m_drive =
-    new MecanumDrive(m_frontLeft::set, m_rearLeft::set, m_frontRight::set, m_rearRight::set);
+  //private final MecanumDrive m_drive =
+  //  new MecanumDrive(m_frontLeft::set, m_rearLeft::set, m_frontRight::set, m_rearRight::set);
    
 
   // The front-left-side drive encoder
@@ -82,9 +84,9 @@ public class SysIDSubsystem extends SubsystemBase {
       // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
       private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
       // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-      private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+      private final MutableMeasure<Distance> m_distance = mutable(Feet.of(0));
       // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-      private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+      private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(FeetPerSecond.of(0));
 
       // Create a new SysId routine for characterizing the drive.
       private final SysIdRoutine m_sysIdRoutine =
@@ -107,36 +109,36 @@ public class SysIDSubsystem extends SubsystemBase {
                         .voltage(
                             m_appliedVoltage.mut_replace(
                                 m_frontLeft.get() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(m_frontLeftEncoder.getDistance(), Meters))
+                        .linearPosition(m_distance.mut_replace(m_frontLeftEncoder.getDistance(), Feet))
                         .linearVelocity(
-                            m_velocity.mut_replace(m_frontLeftEncoder.getRate(), MetersPerSecond));
+                            m_velocity.mut_replace(m_frontLeftEncoder.getRate(), FeetPerSecond));
 
                     log.motor("frontRight")
                         .voltage(
                             m_appliedVoltage.mut_replace(
                                 m_frontRight.get() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(m_frontRightEncoder.getDistance(), Meters))
+                        .linearPosition(m_distance.mut_replace(m_frontRightEncoder.getDistance(), Feet))
                         .linearVelocity(
-                            m_velocity.mut_replace(m_rearRightEncoder.getRate(), MetersPerSecond));
+                            m_velocity.mut_replace(m_rearRightEncoder.getRate(), FeetPerSecond));
 
                     log.motor("rearLeft")
                         .voltage(
                             m_appliedVoltage.mut_replace(
                                 m_rearLeft.get() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(m_rearLeftEncoder.getDistance(), Meters))
+                        .linearPosition(m_distance.mut_replace(m_rearLeftEncoder.getDistance(), Feet))
                         .linearVelocity(
-                            m_velocity.mut_replace(m_rearLeftEncoder.getRate(), MetersPerSecond));
+                            m_velocity.mut_replace(m_rearLeftEncoder.getRate(), FeetPerSecond));
 
                     log.motor("rearRight")
                         .voltage(
                             m_appliedVoltage.mut_replace(
                                 m_rearRight.get() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(m_rearRightEncoder.getDistance(), Meters))
+                        .linearPosition(m_distance.mut_replace(m_rearRightEncoder.getDistance(), Feet))
                         .linearVelocity(
-                            m_velocity.mut_replace(m_rearRightEncoder.getRate(), MetersPerSecond));
+                            m_velocity.mut_replace(m_rearRightEncoder.getRate(), FeetPerSecond));
                   },
                   // Tell SysId to make generated commands require this subsystem, suffix test state in
-                  // WPILog with this subsystem's name ("drive")
+                  // WPILog with this subsystem's name ("SysIDSubsystem")
                   this));
 
                   
@@ -171,6 +173,19 @@ public class SysIDSubsystem extends SubsystemBase {
     m_rearLeft.setInverted(DriveConstants.kRearLeftMotorReversed);
     m_frontRight.setInverted(DriveConstants.kFrontRightMotorReversed);
     m_rearRight.setInverted(DriveConstants.kRearRightMotorReversed);
+
+    //turn of motor safety check
+    m_frontLeft.setSafetyEnabled(false);
+    m_rearLeft.setSafetyEnabled(false);
+    m_rearRight.setSafetyEnabled(false);
+    m_frontRight.setSafetyEnabled(false);
+
+    //reset encoders
+    m_frontLeftEncoder.reset();
+    m_rearLeftEncoder.reset();
+    m_frontRightEncoder.reset();
+    m_rearRightEncoder.reset();
+    
  
   }
 
@@ -179,6 +194,7 @@ public class SysIDSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   
+  /*
   public Command arcadeDriveCommand(DoubleSupplier fwd, double strafe, DoubleSupplier rot) {
     // A split-stick arcade command, with forward/backward controlled by the left
     // hand, and turning controlled by the right.
@@ -187,7 +203,7 @@ public class SysIDSubsystem extends SubsystemBase {
     return run(() -> m_drive.driveCartesian(fwd.getAsDouble(), 0, rot.getAsDouble()))
         .withName("Drive Cartesion");
   }
-    
+    */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.quasistatic(direction);
   }

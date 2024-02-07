@@ -5,6 +5,7 @@
 package frc.robot;
 
 
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
@@ -36,10 +37,10 @@ public final class Constants {
     public static final int kRearRightMotorPort = 23;
 
     //Drive motor inverse
-    public static final boolean kFrontLeftMotorReversed = true; //TODO:  does reversing these help?
-    public static final boolean kRearLeftMotorReversed = true;
-    public static final boolean kFrontRightMotorReversed = false;
-    public static final boolean kRearRightMotorReversed = false;
+    public static final boolean kFrontLeftMotorReversed = false; //TODO:  does reversing these help?
+    public static final boolean kRearLeftMotorReversed = false;
+    public static final boolean kFrontRightMotorReversed = true;
+    public static final boolean kRearRightMotorReversed = true;
 
     //Testbed encoder ports (relative encoders on comp bot)
     public static final int[] kFrontLeftEncoderPorts = new int[] {0, 1};
@@ -95,7 +96,8 @@ public final class Constants {
     public static final double kWheelDiameterIn = 6; //inches
     public static final double kWheelDiameterMeters = kWheelDiameterIn * 0.0254; //meters
     public static final double kEncoderDistancePerPulse =
-        (kWheelDiameterMeters * Math.PI) / (double) kEncoderFinalCPR;
+        //(kWheelDiameterMeters * Math.PI) / (double) kEncoderFinalCPR;
+        ((kWheelDiameterIn * Math.PI)/12.0) / (double) kEncoderFinalCPR; //feet per pulse (for encoders on testbed)
 
     // Max RPM
     public static final double kMaxRPM = 5310 / kGearRatio; //Testbed CIM
