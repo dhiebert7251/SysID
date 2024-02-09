@@ -82,7 +82,7 @@ public final class Constants {
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     // Encoder CPR
-    public static final int kEncoderCPR = 160; //Testbed CIMCoder quadrature 2 channel 20 pulses per channel
+    public static final int kEncoderCPR = 20; //Testbed CIMCoder quadrature 2 channel 20 pulses per channel - can 160 be correct?
     //public static final int kEncoderCPR = 42; //Neo integrated encoder
 
     // Gear ratio
@@ -100,21 +100,21 @@ public final class Constants {
         ((kWheelDiameterIn * Math.PI)/12.0) / (double) kEncoderFinalCPR; //feet per pulse (for encoders on testbed)
 
     // Max RPM
-    public static final double kMaxRPM = 5310 / kGearRatio; //Testbed CIM
+    //public static final double kMaxRPM = 5310 / kGearRatio; //Testbed CIM
     //public static final double kMaxRPM = 5676 / kGearRatio; //Neo 550
 
     // Max velocity
     //public static final double kMaxVelocity = kMaxRPM * (kWheelDiameterMeters * Math.PI) / 60; //meters per second
-    public static final double kMaxVelocity = 2*kMaxRPM * (kWheelDiameterMeters * Math.PI) / 60; //TODO: test value - adjust
+    //public static final double kMaxVelocity = 2*kMaxRPM * (kWheelDiameterMeters * Math.PI) / 60; //TODO: test value - adjust
 
     // Max acceleration
-    public static final double kMaxAcceleration = 1.5; //meters per second squared TODO: tune this
+    //public static final double kMaxAcceleration = 1.5; //meters per second squared TODO: tune this
 
     // Max angular velocity
-    public static final double kMaxAngularVelocity = Math.PI; //radians per second --- 1/2 rotation per second TODO: tune this
+    //public static final double kMaxAngularVelocity = Math.PI; //radians per second --- 1/2 rotation per second TODO: tune this
     
     // Max angular acceleration
-    public static final double kMaxAngularAcceleration = Math.PI; //radians per second squared
+    //public static final double kMaxAngularAcceleration = Math.PI; //radians per second squared
 
     // Wheel PID Constants
     public static final double kPFrontLeft = 0.5;
